@@ -25,7 +25,7 @@ export default function Login() {
           onFinish={async () => {
             const { username, password } = form.getFieldsValue()
             const pass = CryptoJS.SHA512(password).toString()
-            const res = await post("/login", {
+            const res = await post("/user/login", {
               account: username,
               password: pass,
             })
@@ -54,16 +54,16 @@ export default function Login() {
           <Form.Item
             name="password"
             rules={[
-              { required: true, max: 6, message: "最长为6位" },
-              { required: true, min: 5, message: "最短为5位" },
+              { required: true, max: 11, message: "最长为11位" },
+              { required: true, min: 11, message: "最短为11位" },
             ]}
           >
             <Input
               type="password"
               prefix={<LockOutlined />}
-              placeholder="请输入5-6位密码"
-              maxLength={6}
-              minLength={5}
+              placeholder="请输入11位密码"
+              maxLength={11}
+              minLength={11}
             />
           </Form.Item>
           <Form.Item>

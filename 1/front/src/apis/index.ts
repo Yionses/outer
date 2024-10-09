@@ -24,6 +24,7 @@ httpInstance.interceptors.response.use(
       message.success(msg)
     } else if (code === 301) {
       message.error(msg)
+      return Promise.reject(new Error(msg))
     }
     return result
   },
