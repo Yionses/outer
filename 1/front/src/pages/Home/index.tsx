@@ -23,7 +23,6 @@ const App: React.FC = () => {
     token: { colorBgContainer },
   } = theme.useToken()
   const navigate = useNavigate()
-  const { userType } = useContext(UserStatus)
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -51,11 +50,7 @@ const App: React.FC = () => {
           mode="inline"
           defaultSelectedKeys={getSelectKeys()}
           defaultOpenKeys={getSelectKeys()}
-          items={
-            userType === "admin"
-              ? routes
-              : routes.filter((route) => route.key !== "manager")
-          }
+          items={routes}
           onClick={({ keyPath, domEvent }: any) => {
             let path: string = "/home"
             for (let i = keyPath.length; i > 0; i--) {
