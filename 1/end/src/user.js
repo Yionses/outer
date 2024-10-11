@@ -6,8 +6,6 @@ const { sendRes } = require("../utils")
 require("dotenv").config()
 
 router.post("/login", async (req, res) => {
-  console.log(process.env.PASS)
-
   const { password } = req.body
   if (password === process.env.PASS) {
     sendRes.msgs(res, "登录成功")
