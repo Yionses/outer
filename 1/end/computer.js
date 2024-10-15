@@ -2,13 +2,14 @@ const express = require("express")
 const router = express.Router()
 const { sendRes } = require("./utils")
 const { data, testData } = require("./data")
+const fs = require("fs")
 
 router.post("/test", async (req, res) => {
   let i = -1
   const container = [] // item-单子
   let isNewContainer = false
   // 区分每一张单子
-  testData.forEach((perContainer) => {
+  data.forEach((perContainer) => {
     isNewContainer = false
     if (perContainer[0]?.includes("有限公司材料入库单")) {
       i++
@@ -65,7 +66,58 @@ router.post("/test", async (req, res) => {
   //     }
   //   })
   // })
-  sendRes.success(res, resultData_1)
+  //   sendRes.success(res, resultData_1)
+
+  const resData = []
+
+  resultData_1.forEach((corporation) => {
+    corporation.data.forEach((material) => {
+      resData.push([
+        ...material.filter((item) => item != ""),
+        corporation.supplier,
+        corporation.date,
+        +new Date("2023-10-30"),
+      ])
+    })
+  })
+
+  fs.readFile("enter.json", "utf8", (err, data) => {
+    if (err) return
+    // Parse old data
+    let obj = JSON.parse(data)
+
+    // Add new data
+    obj.push(...resData)
+
+    // Convert back to JSON and write to the file
+    let json = JSON.stringify(obj)
+    fs.writeFile("enter.json", json, "utf8", () => {})
+    fs.writeFile("enterBackup.json", json, "utf8", () => {})
+  })
+})
+
+router.get("/material", async (req, res) => {
+  const resData = []
+  const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
+
+  fileData.forEach((item) => {
+    if (!resData.includes(item[0])) {
+      resData.push(item[0])
+    }
+  })
+})
+
+router.get("/specifications", async (req, res) => {
+  // const { material } = req.param
+  const material = "仓储物流服务"
+  const resData = []
+  const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
+  fileData.forEach((item) => {
+    if (item[0] === material && !resData.includes(item[2])) {
+      resData.push(item[2])
+    }
+  })
+  console.log(resData)
 })
 
 module.exports = router
