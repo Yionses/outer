@@ -4,7 +4,7 @@ const { sendRes } = require("./utils")
 const { data, testData } = require("./data")
 const fs = require("fs")
 
-router.post("/test", async (req, res) => {
+router.post("/upload", async (req, res) => {
   let i = -1
   const container = [] // item-单子
   let isNewContainer = false
@@ -109,7 +109,7 @@ router.get("/material", async (req, res) => {
 
 router.get("/specifications", async (req, res) => {
   // const { material } = req.param
-  const material = "仓储物流服务"
+  const material = "45#碳结圆钢"
   const resData = []
   const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
   fileData.forEach((item) => {
@@ -117,7 +117,50 @@ router.get("/specifications", async (req, res) => {
       resData.push(item[2])
     }
   })
-  console.log(resData)
 })
+
+// console.log(resData)
+
+// const { material, specifications, year } = req.param
+const material = "45#碳结圆钢"
+const specifications = 12.905
+let year = "2024"
+const enterData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
+const outerData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
+let targetData = []
+
+enterData.forEach((item) => {
+  if (item?.[0] === material && item?.[2] === specifications) {
+    targetData.push([...item, "入"])
+  }
+})
+
+outerData.forEach((item) => {
+  if (item?.[0] === material && item?.[2] === specifications) {
+    targetData.push([...item, "出"])
+  }
+})
+
+if (year) {
+  targetData = targetData.filter(
+    (item) =>
+      item[9] >= +new Date(`${year}-01-01`) &&
+      item[9] <= +new Date(`${year}-12-31`)
+  )
+}
+
+const sortData = targetData.sort((a, b) => {
+  if (Number(a[9]) - Number(b[9]) === 0) {
+    if (a[10] === "入") {
+      return -1
+    } else {
+      return 1
+    }
+  } else {
+    return Number(a[9]) - Number(b[9])
+  }
+})
+let totalNumber = 0
+console.log(sortData)
 
 module.exports = router

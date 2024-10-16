@@ -1,33 +1,33 @@
-const mysql = require("mysql2")
+// const mysql = require("mysql2")
 
-const pool = mysql.createPool({
-  host: process.env.HOST,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  database: process.env.DATABASE,
-  multipleStatements: true,
-  connectionLimit: 10,
-  connectTimeout: 60 * 60 * 1000,
-  acquireTimeout: 60 * 60 * 1000,
-  timeout: 60 * 60 * 1000,
-  port: process.env.PORT,
-})
+// const pool = mysql.createPool({
+//   host: process.env.HOST,
+//   user: process.env.USER,
+//   password: process.env.PASSWORD,
+//   database: process.env.DATABASE,
+//   multipleStatements: true,
+//   connectionLimit: 10,
+//   connectTimeout: 60 * 60 * 1000,
+//   acquireTimeout: 60 * 60 * 1000,
+//   timeout: 60 * 60 * 1000,
+//   port: process.env.PORT,
+// })
 
-async function getSqlData(sql) {
-  return new Promise((resolve, reject) => {
-    try {
-      pool.query(sql, (err, sqlRes) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(sqlRes)
-        }
-      })
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
+// async function getSqlData(sql) {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       pool.query(sql, (err, sqlRes) => {
+//         if (err) {
+//           reject(err)
+//         } else {
+//           resolve(sqlRes)
+//         }
+//       })
+//     } catch (error) {
+//       reject(error)
+//     }
+//   })
+// }
 
 const operation = (res, code, data, message) => {
   res.send({
@@ -56,6 +56,6 @@ const sendRes = {
 }
 
 module.exports = {
-  getSqlData,
+  // getSqlData,
   sendRes,
 }
