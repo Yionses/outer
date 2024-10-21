@@ -109,58 +109,78 @@ router.get("/material", async (req, res) => {
 
 router.get("/specifications", async (req, res) => {
   // const { material } = req.param
-  const material = "45#碳结圆钢"
+  const material = "轴承"
   const resData = []
   const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
   fileData.forEach((item) => {
-    if (item[0] === material && !resData.includes(item[2])) {
-      resData.push(item[2])
+    if (item[0] === material && !resData.includes(item[1])) {
+      resData.push(item[1])
     }
   })
+  console.log(resData)
 })
 
-// console.log(resData)
+router.get("/data", async (req, res) => {
+  // const { material, specifications, year } = req.param
+  const material = "45#碳结圆钢"
+  const specifications = "Ф35mm"
+  let year = "2023"
+  const enterData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
+  const outerData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
+  let targetData = []
 
-// const { material, specifications, year } = req.param
-const material = "45#碳结圆钢"
-const specifications = 12.905
-let year = "2024"
-const enterData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
-const outerData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
-let targetData = []
-
-enterData.forEach((item) => {
-  if (item?.[0] === material && item?.[2] === specifications) {
-    targetData.push([...item, "入"])
-  }
-})
-
-outerData.forEach((item) => {
-  if (item?.[0] === material && item?.[2] === specifications) {
-    targetData.push([...item, "出"])
-  }
-})
-
-if (year) {
-  targetData = targetData.filter(
-    (item) =>
-      item[9] >= +new Date(`${year}-01-01`) &&
-      item[9] <= +new Date(`${year}-12-31`)
-  )
-}
-
-const sortData = targetData.sort((a, b) => {
-  if (Number(a[9]) - Number(b[9]) === 0) {
-    if (a[10] === "入") {
-      return -1
-    } else {
-      return 1
+  enterData.forEach((item) => {
+    if (item?.[0] === material && item?.[1] === specifications) {
+      targetData.push([...item, "入"])
     }
-  } else {
-    return Number(a[9]) - Number(b[9])
-  }
-})
-let totalNumber = 0
-console.log(sortData)
+  })
 
+  outerData.forEach((item) => {
+    if (item?.[0] === material && item?.[1] === specifications) {
+      targetData.push([...item, "出"])
+    }
+  })
+
+  if (year) {
+    targetData = targetData.filter(
+      (item) =>
+        item[9] >= +new Date(`${year}-01-01`) &&
+        item[9] <= +new Date(`${year}-12-31`)
+    )
+  }
+
+  const sortData = targetData.sort((a, b) => {
+    if (Number(a[9]) - Number(b[9]) === 0) {
+      if (a[10] === "入") {
+        return -1
+      } else {
+        return 1
+      }
+    } else {
+      return Number(a[9]) - Number(b[9])
+    }
+  })
+  let totalNumber = 0
+  let totalPrice = 0
+  sortData.forEach((item, index) => {
+    if (item[10] === "入") {
+      totalNumber += Number(item[2])
+      totalPrice += Number(item[5])
+    } else {
+      totalNumber -= Number(item[2])
+      totalPrice -= Number(item[5])
+    }
+    if (
+      index === targetData.length - 1 ||
+      targetData[index + 1][10] !== item[10]
+    ) {
+      item.push({
+        number: totalNumber,
+        price: totalPrice,
+      })
+    }
+  })
+  console.log(sortData) //  最终返回数据
+  // 生成Excel尚缺
+})
 module.exports = router
