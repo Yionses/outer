@@ -25,7 +25,7 @@ export default function Login() {
           onFinish={async () => {
             setIsLoing(true)
             // setUserInfo(res)
-            navigate("/home/index")
+            navigate("/home/insert")
             return
             const { username, password } = form.getFieldsValue()
             const pass = CryptoJS.SHA512(password).toString()

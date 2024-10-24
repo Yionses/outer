@@ -2,11 +2,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Login from "@/pages/Login"
 import Home from "@/pages/Home"
 import Query from "./pages/Query"
-import User from "./pages/User"
 import ErrorPage from "./pages/Error"
 import { UserStatusProvider } from "./Contexts/UserStatus"
 import Limit from "./pages/Limit"
 import Indexer from "./pages/Index/indexer"
+import Outer from "./pages/Outer"
+import Insert from "./pages/Insert"
 export default function App() {
   return (
     <UserStatusProvider>
@@ -35,6 +36,22 @@ export default function App() {
               element={
                 <Limit>
                   <Query />
+                </Limit>
+              }
+            />
+            <Route
+              path="outer"
+              element={
+                <Limit>
+                  <Outer />
+                </Limit>
+              }
+            />
+            <Route
+              path="insert"
+              element={
+                <Limit>
+                  <Insert />
                 </Limit>
               }
             />
