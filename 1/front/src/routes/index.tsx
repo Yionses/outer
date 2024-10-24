@@ -17,19 +17,20 @@ export const routes: MenuItem[] = [
   //   icon: <HomeOutlined />,
   //   key: "home",
   // },
-  {
-    label: "入库记录",
-    icon: <UploadOutlined />,
-    key: "insert",
-  },
-  {
-    label: "出库记录",
-    icon: <LogoutOutlined />,
-    key: "outer",
-  },
+
   {
     label: "库存查询",
     icon: <SearchOutlined />,
     key: "query",
+  },
+  {
+    label: "物料入库",
+    icon: <UploadOutlined />,
+    key: "insert",
+  },
+  {
+    label: "物料出库",
+    icon: <LogoutOutlined />,
+    key: "outer",
   },
 ]
