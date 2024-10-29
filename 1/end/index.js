@@ -17,11 +17,8 @@ app.use(bodyParser.json())
 const user = require("./src/user")
 const data = require("./src/data")
 
-const test = require("./computer")
-
 app.use("/user", user)
 app.use("/data", data)
-app.use("/test", test)
 
 app.listen(3000, "0.0.0.0", () => {
   console.log("Server is running on port 3000")
