@@ -14,5 +14,8 @@
     "express": "^4.19.2",
     "mysql2": "^3.11.0",
     "nodemon": "latest"
+  },
+  "devDependencies": {
+    "node-xlsx": "^0.24.0"
   }
 }

@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const { sendRes } = require("../utils")
 const fs = require("fs")
+var xlsx = require("node-xlsx")
 
 router.post("/upload", async (req, res) => {
   fs.readFile("enter.json", "utf8", (err, data) => {
@@ -20,6 +21,23 @@ router.post("/upload", async (req, res) => {
   })
 })
 
+router.post("/outerUpload", async (req, res) => {
+  // 读取文件内容
+  var obj = xlsx.parse(__dirname + "/../outer.xlsx")
+  var excelObj = obj[0].data
+
+  const outerDate = excelObj[0]?.[0].split("出库明细表")?.[0] || "暂无出库时间"
+
+  const outerData = []
+
+  for (let i = 3; i < excelObj.length - 1; i++) {
+    outerData.push([
+      ...excelObj[i],
+      +new Date(outerDate.replace("年", "-").replace("月", "-") + "1"),
+    ])
+  }
+})
+
 router.get("/material", async (req, res) => {
   const resData = []
   const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
@@ -29,11 +47,12 @@ router.get("/material", async (req, res) => {
       resData.push(item[0])
     }
   })
+  console.log(resData)
 })
 
 router.get("/specifications", async (req, res) => {
   // const { material } = req.param
-  const material = "轴承"
+  const material = "45#碳结圆钢"
   const resData = []
   const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
   fileData.forEach((item) => {
