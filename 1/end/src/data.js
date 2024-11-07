@@ -145,60 +145,78 @@ router.get("/data", async (req, res) => {
   let year = "2023"
   const enterData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
   const outerData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
+
   let targetData = []
 
   enterData.forEach((item) => {
     if (item?.[0] === material && item?.[1] === specifications) {
-      targetData.push([...item, "入"])
+      targetData.push([
+        item[0],
+        item[1],
+        item[2],
+        item[3],
+        item[4],
+        item[5],
+        item[10],
+        "入",
+      ])
     }
   })
 
   outerData.forEach((item) => {
     if (item?.[0] === material && item?.[1] === specifications) {
-      targetData.push([...item, "出"])
+      targetData.push([
+        item[0],
+        item[1],
+        item[3],
+        item[2],
+        item[4],
+        item[5],
+        item[6],
+        "出",
+      ])
     }
   })
 
   if (year) {
     targetData = targetData.filter(
       (item) =>
-        item[9] >= +new Date(`${year}-01-01`) &&
-        item[9] <= +new Date(`${year}-12-31`)
+        item[6] >= +new Date(`${year}-01-01`) &&
+        item[6] <= +new Date(`${year}-12-31`)
     )
   }
 
   const sortData = targetData.sort((a, b) => {
-    if (Number(a[9]) - Number(b[9]) === 0) {
-      if (a[10] === "入") {
+    if (Number(a[6]) - Number(b[6]) === 0) {
+      if (a[7] === "入") {
         return -1
       } else {
         return 1
       }
     } else {
-      return Number(a[9]) - Number(b[9])
+      return Number(a[6]) - Number(b[6])
     }
   })
   let totalNumber = 0
   let totalPrice = 0
+
   sortData.forEach((item, index) => {
-    if (item[10] === "入") {
-      totalNumber += Number(item[2])
+    if (item[7] === "入") {
+      totalNumber += Number(item[4])
       totalPrice += Number(item[5])
     } else {
-      totalNumber -= Number(item[2])
+      totalNumber -= Number(item[4])
       totalPrice -= Number(item[5])
     }
     if (
       index === targetData.length - 1 ||
-      targetData[index + 1][10] !== item[10]
+      targetData[index + 1][7] !== item[7]
     ) {
-      item.push({
-        number: totalNumber,
-        price: totalPrice,
-      })
+      item.push(totalPrice, totalNumber)
     }
   })
-  console.log(sortData) //  最终返回数据
+  console.log(sortData)
+
   // 生成Excel尚缺
 })
 module.exports = router
