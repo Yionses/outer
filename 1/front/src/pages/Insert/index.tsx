@@ -75,7 +75,7 @@ export default function Insert() {
               ...material.filter((_: any, index: any) => index > 0),
               corporation.supplier,
               corporation.date,
-              +new Date("2023-10-30"),
+              +new Date(corporation.date.replace("制单日期：", "")),
             ])
           })
         })
@@ -160,7 +160,22 @@ export default function Insert() {
           <Button
             type="primary"
             onClick={async () => {
-              await mutateAsync({ data } as any)
+              console.log(data)
+              await mutateAsync({
+                data: data.map((item) => [
+                  item[0],
+                  item[1] ? item[1] : "无规格",
+                  item[2],
+                  item[3],
+                  item[4],
+                  item[5],
+                  item[6],
+                  item[7],
+                  item[8],
+                  item[9],
+                  item[10],
+                ]),
+              } as any)
               message.success("上传成功！")
               setIsShowModal(false)
               setData([])
