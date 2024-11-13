@@ -59,8 +59,14 @@ router.post("/outerUpload", async (req, res) => {
 router.get("/material", async (req, res) => {
   const resData = []
   const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
+  const fileOuterData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
 
   fileData.forEach((item) => {
+    if (!resData.includes(item[0])) {
+      resData.push(item[0])
+    }
+  })
+  fileOuterData.forEach((item) => {
     if (!resData.includes(item[0])) {
       resData.push(item[0])
     }
@@ -88,13 +94,10 @@ router.post("/specifications", async (req, res) => {
   sendRes.success(res, resData, "获取成功")
 })
 
-router.post("/data", async (req, res) => {
-  const { material, specifications } = req.body
-  // const material = "综框"
-  // const specifications = "280*120*120*1968"
-  // let year = "2024"
+function getDataList(material, specifications, year = "") {
   const enterData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
   const outerData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
+  console.log(material, specifications)
 
   let targetData = []
 
@@ -127,6 +130,7 @@ router.post("/data", async (req, res) => {
       ])
     }
   })
+  console.log(targetData)
 
   if (year) {
     targetData = targetData.filter(
@@ -152,10 +156,10 @@ router.post("/data", async (req, res) => {
 
   sortData.forEach((item, index) => {
     if (item[7] === "入") {
-      totalNumber += Number(item[4])
+      totalNumber += Number(item[2])
       totalPrice += Number(item[5])
     } else {
-      totalNumber -= Number(item[4])
+      totalNumber -= Number(item[2])
       totalPrice -= Number(item[5])
     }
     if (
@@ -165,8 +169,12 @@ router.post("/data", async (req, res) => {
       item.push(totalPrice, totalNumber)
     }
   })
-  // console.log(sortData)
+  return sortData
+}
 
-  // 生成Excel尚缺
+router.post("/data", async (req, res) => {
+  const { material, specification, year } = req.body
+  const data = getDataList(material, specification, year)
+  sendRes.success(res, data, "获取成功")
 })
 module.exports = router

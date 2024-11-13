@@ -3,11 +3,11 @@ import {
   fetchMaterial,
   fetchSpecifications,
 } from "@/apis/apis"
-import { Select, Space } from "antd"
+import { DatePicker, Select, Space } from "antd"
 import dayjs from "dayjs"
 import { useEffect, useState } from "react"
 
-export default function Query() {
+export default function YearQuery() {
   const { mutateAsync } = fetchMaterial()
   const { mutateAsync: fetchSpecification } = fetchSpecifications()
   const [materialList, setMaterialList] = useState([])
@@ -16,7 +16,10 @@ export default function Query() {
   const [material, setMaterial] = useState("")
   const [specification, setSpecification] = useState("")
   const [data, setData] = useState([])
-
+  const [year, setYear] = useState(new Date().getFullYear())
+  useEffect(() => {
+    console.log(year)
+  }, [year])
   useEffect(() => {
     async function getData() {
       const res = (await mutateAsync()) || []
@@ -41,11 +44,11 @@ export default function Query() {
   }, [material])
   useEffect(() => {
     async function getData() {
-      const res = await getDataDetail({ material, specification })
+      const res = await getDataDetail({ material, specification, year })
       setData(res as any)
     }
     getData()
-  }, [specification])
+  }, [specification, material, year])
   return (
     <>
       <Space>
@@ -70,6 +73,14 @@ export default function Query() {
             }))}
             onChange={setSpecification}
             showSearch
+          />
+        </div>
+        <div>
+          年份：
+          <DatePicker
+            picker="year"
+            onChange={(_, a) => setYear(a)}
+            defaultValue={dayjs()}
           />
         </div>
       </Space>

@@ -24,6 +24,11 @@ export const routes: MenuItem[] = [
     key: "query",
   },
   {
+    label: "年报表查询",
+    icon: <SearchOutlined />,
+    key: "yearQuery",
+  },
+  {
     label: "物料入库",
     icon: <UploadOutlined />,
     key: "insert",

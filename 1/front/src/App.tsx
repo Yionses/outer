@@ -8,6 +8,7 @@ import Limit from "./pages/Limit"
 import Indexer from "./pages/Index/indexer"
 import Outer from "./pages/Outer"
 import Insert from "./pages/Insert"
+import YearQuery from "./pages/YearQuery"
 export default function App() {
   return (
     <UserStatusProvider>
@@ -36,6 +37,14 @@ export default function App() {
               element={
                 <Limit>
                   <Query />
+                </Limit>
+              }
+            />
+            <Route
+              path="yearQuery"
+              element={
+                <Limit>
+                  <YearQuery />
                 </Limit>
               }
             />

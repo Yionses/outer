@@ -16,3 +16,7 @@ export function fetchMaterial() {
 export function fetchSpecifications() {
   return useMutation((data) => post("/data/specifications", data))
 }
+
+export function fetchDataDetail() {
+  return useMutation((data) => post("/data/data", data))
+}
