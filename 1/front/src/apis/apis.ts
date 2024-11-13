@@ -8,3 +8,11 @@ export function fetchUploadData() {
 export function fetchUploadOuterData() {
   return useMutation((data: any) => post("/data/outerUpload", data))
 }
+
+export function fetchMaterial() {
+  return useMutation(() => get("/data/material"))
+}
+
+export function fetchSpecifications() {
+  return useMutation((data) => post("/data/specifications", data))
+}
