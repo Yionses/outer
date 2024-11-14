@@ -3,9 +3,11 @@ import {
   fetchMaterial,
   fetchSpecifications,
 } from "@/apis/apis"
-import { DatePicker, Select, Space } from "antd"
+import { Button, DatePicker, Select, Space } from "antd"
 import dayjs from "dayjs"
 import { useEffect, useState } from "react"
+import ExcelJS from "exceljs"
+import { title } from "process"
 
 export default function YearQuery() {
   const { mutateAsync } = fetchMaterial()
@@ -17,6 +19,50 @@ export default function YearQuery() {
   const [specification, setSpecification] = useState("")
   const [data, setData] = useState([])
   const [year, setYear] = useState(new Date().getFullYear())
+  async function exportExcel() {
+    // 创建一个新的工作簿
+    const workbook = new ExcelJS.Workbook()
+
+    // 添加一个名为"My Sheet"的工作表
+    const worksheet = workbook.addWorksheet("My Sheet")
+
+    // 添加表头
+    worksheet.columns = [
+      { header: "类型", key: "type", width: 20 },
+      { header: "日期", key: "date", width: 20 },
+      { header: "数量", key: "number", width: 20 },
+      { header: "单位", key: "unit", width: 20 },
+      { header: "单价", key: "price", width: 20 },
+      { header: "金额", key: "amount", width: 20 },
+      { header: "剩余总数量", key: "remainNumber", width: 20 },
+      { header: "剩余总金额", key: "remainAmount", width: 20 },
+    ]
+
+    data.forEach((item) => {
+      worksheet.addRow({
+        type: item[7] + "库",
+        date: dayjs(item?.[6]).format("YYYY-MM-DD"),
+        number: item[2],
+        unit: item[3],
+        price: item[4],
+        amount: item[5],
+        remainNumber: item?.[9] || item[9] == 0 ? item[9] : " ",
+        remainAmount: item?.[8] || item[8] == 0 ? item[8] : " ",
+      })
+    })
+
+    // 将工作簿写入buffer
+    const buffer = await workbook.xlsx.writeBuffer()
+
+    // 创建Blob对象并触发下载
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    })
+    const link = document.createElement("a")
+    link.href = URL.createObjectURL(blob)
+    link.download = `${year}年${material}__${specification}详情表.xlsx`
+    link.click()
+  }
   useEffect(() => {
     console.log(year)
   }, [year])
@@ -83,6 +129,9 @@ export default function YearQuery() {
             defaultValue={dayjs()}
           />
         </div>
+        <Button type="primary" onClick={exportExcel}>
+          导出
+        </Button>
       </Space>
       <div
         className="my-4 flex flex-row justify-between items-center py-2"

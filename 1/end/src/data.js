@@ -43,7 +43,6 @@ router.post("/outerUpload", async (req, res) => {
     if (err) return
     // Parse old data
     let obj = JSON.parse(data)
-    console.log(outerData)
 
     // Add new data
     obj.push(...outerData)
@@ -97,7 +96,6 @@ router.post("/specifications", async (req, res) => {
 function getDataList(material, specifications, year = "") {
   const enterData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
   const outerData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
-  console.log(material, specifications)
 
   let targetData = []
 
@@ -130,7 +128,6 @@ function getDataList(material, specifications, year = "") {
       ])
     }
   })
-  console.log(targetData)
 
   if (year) {
     targetData = targetData.filter(

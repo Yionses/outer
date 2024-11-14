@@ -23,10 +23,6 @@ export default function Login() {
           className="mt-8"
           form={form}
           onFinish={async () => {
-            setIsLoing(true)
-            // setUserInfo(res)
-            navigate("/home/query")
-            return
             const { username, password } = form.getFieldsValue()
             const pass = CryptoJS.SHA512(password).toString()
             const res = await post("/user/login", {
@@ -36,7 +32,7 @@ export default function Login() {
             if (res) {
               setIsLoing(true)
               setUserInfo(res)
-              navigate("/home/index")
+              navigate("/home/query")
             }
           }}
         >
