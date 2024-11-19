@@ -2,6 +2,14 @@ const express = require("express")
 const router = express.Router()
 const { sendRes } = require("../utils")
 const fs = require("fs")
+const OSS = require("ali-oss")
+const client = new OSS({
+  region: process.env.OSS_REGION,
+  accessKeyId: process.env.OSS_ACCESS_KEY_ID,
+  accessKeySecret: process.env.OSS_ACCESS_KEY_SECRET,
+  bucket: process.env.OSS_BUCKET
+})
+require("dotenv").config()
 
 router.post("/upload", async (req, res) => {
   fs.readFile("enter.json", "utf8", (err, data) => {
@@ -36,7 +44,7 @@ router.post("/outerUpload", async (req, res) => {
       excelObj[i][3],
       excelObj[i][4],
       excelObj[i][5],
-      +new Date(outerDate.replace("年", "-").replace("月", "-") + "1"),
+      +new Date(outerDate.replace("年", "-").replace("月", "-") + "1")
     ])
   }
   fs.readFile("outer.json", "utf8", (err, data) => {
@@ -109,7 +117,7 @@ function getDataList(material, specifications, year = "") {
         item[4],
         item[5],
         item[10],
-        "入",
+        "入"
       ])
     }
   })
@@ -124,7 +132,7 @@ function getDataList(material, specifications, year = "") {
         item[4],
         item[5],
         item[6],
-        "出",
+        "出"
       ])
     }
   })
@@ -174,4 +182,14 @@ router.post("/data", async (req, res) => {
   const data = getDataList(material, specification, year)
   sendRes.success(res, data, "获取成功")
 })
+
+async function getBuffer(fileName) {
+  try {
+    const result = await client.get(fileName)
+    return JSON.parse(result.content.toString("utf8"))
+  } catch (e) {
+    throw new Error("读取文件错误！")
+  }
+}
+
 module.exports = router
