@@ -1,72 +1,88 @@
 const express = require("express")
 const router = express.Router()
 const { sendRes } = require("../utils")
-const fs = require("fs")
 const OSS = require("ali-oss")
+require("dotenv").config()
+
 const client = new OSS({
   region: process.env.OSS_REGION,
   accessKeyId: process.env.OSS_ACCESS_KEY_ID,
   accessKeySecret: process.env.OSS_ACCESS_KEY_SECRET,
   bucket: process.env.OSS_BUCKET
 })
-require("dotenv").config()
+
+async function getBuffer(fileName) {
+  try {
+    const result = await client.get(fileName)
+    return JSON.parse(result.content.toString("utf8"))
+  } catch (e) {
+    throw new Error("读取文件错误！")
+  }
+}
+
+async function updateContent(fileName, newArr) {
+  try {
+    let result = await client.get(fileName + ".json")
+    let arr = JSON.parse(result.content.toString("utf8"))
+
+    arr.push(...newArr)
+
+    let buffer = Buffer.from(JSON.stringify(arr))
+    await client.put(fileName + ".json", buffer)
+
+    // 备份文件也要读
+    result = await client.get(fileName + "Backup.json")
+    await client.put(fileName + "Backup.json", buffer)
+  } catch (e) {
+    throw new Error("读取文件错误！")
+  }
+}
 
 router.post("/upload", async (req, res) => {
-  fs.readFile("enter.json", "utf8", (err, data) => {
-    if (err) return
-    // Parse old data
-    let obj = JSON.parse(data)
-
-    // Add new data
-    obj.push(...req.body.data)
-
-    // Convert back to JSON and write to the file
-    let json = JSON.stringify(obj)
-    fs.writeFile("enter.json", json, "utf8", () => {})
-    fs.writeFile("enterBackup.json", json, "utf8", () => {})
-    sendRes.msgs(res, "上传成功")
-  })
+  try {
+    await updateContent("enter", req.body.data)
+  } catch (error) {
+    sendRes.msge(res, error?.message || "请联系开发者！")
+  }
 })
 
 router.post("/outerUpload", async (req, res) => {
-  // 读取文件内容
-  var excelObj = req.body.data
+  try {
+    // 读取文件内容
+    var excelObj = req.body.data
 
-  const outerDate = excelObj[0]?.[0].split("出库明细表")?.[0] || "暂无出库时间"
+    const outerDate =
+      excelObj[0]?.[0].split("出库明细表")?.[0] || "暂无出库时间"
 
-  const outerData = []
+    const outerData = []
 
-  for (let i = 3; i < excelObj.length - 1; i++) {
-    outerData.push([
-      excelObj[i][0],
-      excelObj[i][1] ? excelObj[i][1] : "无规格",
-      excelObj[i][2],
-      excelObj[i][3],
-      excelObj[i][4],
-      excelObj[i][5],
-      +new Date(outerDate.replace("年", "-").replace("月", "-") + "1")
-    ])
+    for (let i = 3; i < excelObj.length - 1; i++) {
+      outerData.push([
+        excelObj[i][0],
+        excelObj[i][1] ? excelObj[i][1] : "无规格",
+        excelObj[i][2],
+        excelObj[i][3],
+        excelObj[i][4],
+        excelObj[i][5],
+        +new Date(outerDate.replace("年", "-").replace("月", "-") + "1")
+      ])
+    }
+    await updateContent("outer", req.body.data)
+  } catch (error) {
+    sendRes.msge(res, error?.message || "请联系开发者！")
   }
-  fs.readFile("outer.json", "utf8", (err, data) => {
-    if (err) return
-    // Parse old data
-    let obj = JSON.parse(data)
-
-    // Add new data
-    obj.push(...outerData)
-
-    // Convert back to JSON and write to the file
-    let json = JSON.stringify(obj)
-    fs.writeFile("outer.json", json, "utf8", () => {})
-    fs.writeFile("outerBackup.json", json, "utf8", () => {})
-    sendRes.msgs(res, "上传成功")
-  })
 })
 
 router.get("/material", async (req, res) => {
   const resData = []
-  const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
-  const fileOuterData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
+  let fileData = []
+  let fileOuterData = []
+  try {
+    fileData = await getBuffer("enter.json")
+    fileOuterData = await getBuffer("outer.json")
+  } catch (error) {
+    sendRes.msge(res, "请联系开发者！")
+  }
 
   fileData.forEach((item) => {
     if (!resData.includes(item[0])) {
@@ -85,8 +101,14 @@ router.post("/specifications", async (req, res) => {
   const { material } = req.body
 
   const resData = []
-  const fileData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
-  const fileOuterData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
+  let fileData = []
+  let fileOuterData = []
+  try {
+    fileData = await getBuffer("enter.json")
+    fileOuterData = await getBuffer("outer.json")
+  } catch (error) {
+    sendRes.msge(res, "请联系开发者！")
+  }
   fileData.forEach((item) => {
     if (item[0] === material && !resData.includes(item[1])) {
       resData.push(item[1])
@@ -101,10 +123,15 @@ router.post("/specifications", async (req, res) => {
   sendRes.success(res, resData, "获取成功")
 })
 
-function getDataList(material, specifications, year = "") {
-  const enterData = JSON.parse(fs.readFileSync("enter.json", "utf8"))
-  const outerData = JSON.parse(fs.readFileSync("outer.json", "utf8"))
-
+async function getDataList(material, specifications, year = "") {
+  let enterData = []
+  let outerData = []
+  try {
+    enterData = await getBuffer("enter.json")
+    outerData = await getBuffer("outer.json")
+  } catch (error) {
+    sendRes.msge(res, "请联系开发者！")
+  }
   let targetData = []
 
   enterData.forEach((item) => {
@@ -179,17 +206,11 @@ function getDataList(material, specifications, year = "") {
 
 router.post("/data", async (req, res) => {
   const { material, specification, year } = req.body
-  const data = getDataList(material, specification, year)
+  let data = []
+  try {
+    data = await getDataList(material, specification, year)
+  } catch (error) {}
   sendRes.success(res, data, "获取成功")
 })
-
-async function getBuffer(fileName) {
-  try {
-    const result = await client.get(fileName)
-    return JSON.parse(result.content.toString("utf8"))
-  } catch (e) {
-    throw new Error("读取文件错误！")
-  }
-}
 
 module.exports = router
