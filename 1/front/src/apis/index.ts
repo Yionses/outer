@@ -3,7 +3,7 @@ import { message } from "antd"
 
 const httpInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL_LOCAL,
-  timeout: 5000,
+  timeout: 10000,
 })
 
 httpInstance.interceptors.request.use(

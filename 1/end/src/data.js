@@ -8,7 +8,7 @@ const client = new OSS({
   region: process.env.OSS_REGION,
   accessKeyId: process.env.OSS_ACCESS_KEY_ID,
   accessKeySecret: process.env.OSS_ACCESS_KEY_SECRET,
-  bucket: process.env.OSS_BUCKET
+  bucket: process.env.OSS_BUCKET,
 })
 
 async function getBuffer(fileName) {
@@ -41,6 +41,7 @@ async function updateContent(fileName, newArr) {
 router.post("/upload", async (req, res) => {
   try {
     await updateContent("enter", req.body.data)
+    sendRes.msgs(res, "上传成功！")
   } catch (error) {
     sendRes.msge(res, error?.message || "请联系开发者！")
   }
@@ -64,10 +65,11 @@ router.post("/outerUpload", async (req, res) => {
         excelObj[i][3],
         excelObj[i][4],
         excelObj[i][5],
-        +new Date(outerDate.replace("年", "-").replace("月", "-") + "1")
+        +new Date(outerDate.replace("年", "-").replace("月", "-") + "1"),
       ])
     }
-    await updateContent("outer", req.body.data)
+    await updateContent("outer", outerData)
+    sendRes.msgs(res, "上传成功！")
   } catch (error) {
     sendRes.msge(res, error?.message || "请联系开发者！")
   }
@@ -82,6 +84,7 @@ router.get("/material", async (req, res) => {
     fileOuterData = await getBuffer("outer.json")
   } catch (error) {
     sendRes.msge(res, "请联系开发者！")
+    return
   }
 
   fileData.forEach((item) => {
@@ -108,6 +111,7 @@ router.post("/specifications", async (req, res) => {
     fileOuterData = await getBuffer("outer.json")
   } catch (error) {
     sendRes.msge(res, "请联系开发者！")
+    return
   }
   fileData.forEach((item) => {
     if (item[0] === material && !resData.includes(item[1])) {
@@ -131,6 +135,7 @@ async function getDataList(material, specifications, year = "") {
     outerData = await getBuffer("outer.json")
   } catch (error) {
     sendRes.msge(res, "请联系开发者！")
+    return
   }
   let targetData = []
 
@@ -144,7 +149,7 @@ async function getDataList(material, specifications, year = "") {
         item[4],
         item[5],
         item[10],
-        "入"
+        "入",
       ])
     }
   })
@@ -159,7 +164,7 @@ async function getDataList(material, specifications, year = "") {
         item[4],
         item[5],
         item[6],
-        "出"
+        "出",
       ])
     }
   })
@@ -209,7 +214,10 @@ router.post("/data", async (req, res) => {
   let data = []
   try {
     data = await getDataList(material, specification, year)
-  } catch (error) {}
+  } catch (error) {
+    sendRes.msge(res, "请联系开发者！")
+    return
+  }
   sendRes.success(res, data, "获取成功")
 })
 
