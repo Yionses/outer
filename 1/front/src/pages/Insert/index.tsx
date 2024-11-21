@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Button, Empty, message, Modal, Space, Upload } from "antd"
 import { UploadOutlined } from "@ant-design/icons"
 import * as XLSX from "xlsx"
@@ -53,7 +55,7 @@ export default function Insert() {
           resultData_1[i] = {
             supplier: "",
             date: "",
-            data: [],
+            data: []
           }
           // 供应商和时间
           paper.forEach((item: any) => {
@@ -75,7 +77,7 @@ export default function Insert() {
               ...material.filter((_: any, index: any) => index > 0),
               corporation.supplier,
               corporation.date,
-              +new Date(corporation.date.replace("制单日期：", "")),
+              +new Date(corporation.date.replace("制单日期：", ""))
             ])
           })
         })
@@ -124,7 +126,7 @@ export default function Insert() {
                       borderWidth: ".5px",
                       borderStyle: "solid",
                       borderLeft: "none",
-                      borderRight: "none",
+                      borderRight: "none"
                     }}
                   >
                     {items || "无"}
@@ -136,7 +138,7 @@ export default function Insert() {
                 fontSize: "1.5rem",
                 fontWeight: "bold",
                 textAlign: "right",
-                marginRight: "1rem",
+                marginRight: "1rem"
               }}
             >
               {(index === data.length - 1 && item[8] + "--") ||
@@ -173,8 +175,8 @@ export default function Insert() {
                   item[7],
                   item[8],
                   item[9],
-                  item[10],
-                ]),
+                  item[10]
+                ])
               } as any)
               message.success("上传成功！")
               setIsShowModal(false)

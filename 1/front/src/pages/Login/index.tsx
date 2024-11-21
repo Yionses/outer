@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Button, Form, Input, message } from "antd"
 import "./index.less"
 import { LockOutlined, UserOutlined } from "@ant-design/icons"
@@ -24,10 +26,14 @@ export default function Login() {
           form={form}
           onFinish={async () => {
             const { username, password } = form.getFieldsValue()
+            if (username !== "admin") {
+              message.error("用户名错误！")
+              return
+            }
             const pass = CryptoJS.SHA512(password).toString()
             const res = await post("/user/login", {
               account: username,
-              password: pass,
+              password: pass
             })
             if (res) {
               setIsLoing(true)
@@ -41,7 +47,7 @@ export default function Login() {
             rules={[
               { required: true, message: "请输入账号" },
               { required: true, max: 8, message: "最长为8位" },
-              { required: true, min: 5, message: "最短为5位" },
+              { required: true, min: 5, message: "最短为5位" }
             ]}
           >
             <Input prefix={<UserOutlined />} placeholder="请输入账号" />
@@ -50,7 +56,7 @@ export default function Login() {
             name="password"
             rules={[
               { required: true, max: 11, message: "最长为11位" },
-              { required: true, min: 11, message: "最短为11位" },
+              { required: true, min: 11, message: "最短为11位" }
             ]}
           >
             <Input

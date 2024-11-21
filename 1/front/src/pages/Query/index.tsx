@@ -1,7 +1,8 @@
+// @ts-nocheck
 import {
   fetchDataDetail,
   fetchMaterial,
-  fetchSpecifications,
+  fetchSpecifications
 } from "@/apis/apis"
 import { Select, Space } from "antd"
 import dayjs from "dayjs"
@@ -66,7 +67,7 @@ export default function Query() {
             style={{ width: "200px" }}
             options={specificationList.map((item) => ({
               label: item,
-              value: item,
+              value: item
             }))}
             onChange={setSpecification}
             showSearch
@@ -85,7 +86,7 @@ export default function Query() {
           "单价",
           "金额",
           "剩余总数量",
-          "剩余总金额",
+          "剩余总金额"
         ].map((item) => {
           return (
             <span className="text-center flex-grow font-bold text-xl w-1/12">

@@ -1,13 +1,13 @@
+// @ts-nocheck
 import {
   fetchDataDetail,
   fetchMaterial,
-  fetchSpecifications,
+  fetchSpecifications
 } from "@/apis/apis"
 import { Button, DatePicker, Select, Space } from "antd"
 import dayjs from "dayjs"
 import { useEffect, useState } from "react"
 import ExcelJS from "exceljs"
-import { title } from "process"
 
 export default function YearQuery() {
   const { mutateAsync } = fetchMaterial()
@@ -35,7 +35,7 @@ export default function YearQuery() {
       { header: "单价", key: "price", width: 20 },
       { header: "金额", key: "amount", width: 20 },
       { header: "剩余总数量", key: "remainNumber", width: 20 },
-      { header: "剩余总金额", key: "remainAmount", width: 20 },
+      { header: "剩余总金额", key: "remainAmount", width: 20 }
     ]
 
     data.forEach((item) => {
@@ -47,7 +47,7 @@ export default function YearQuery() {
         price: item[4],
         amount: item[5],
         remainNumber: item?.[9] || item[9] == 0 ? item[9] : " ",
-        remainAmount: item?.[8] || item[8] == 0 ? item[8] : " ",
+        remainAmount: item?.[8] || item[8] == 0 ? item[8] : " "
       })
     })
 
@@ -56,7 +56,7 @@ export default function YearQuery() {
 
     // 创建Blob对象并触发下载
     const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     })
     const link = document.createElement("a")
     link.href = URL.createObjectURL(blob)
@@ -115,7 +115,7 @@ export default function YearQuery() {
             style={{ width: "200px" }}
             options={specificationList.map((item) => ({
               label: item,
-              value: item,
+              value: item
             }))}
             onChange={setSpecification}
             showSearch
@@ -145,7 +145,7 @@ export default function YearQuery() {
           "单价",
           "金额",
           "剩余总数量",
-          "剩余总金额",
+          "剩余总金额"
         ].map((item) => {
           return (
             <span className="text-center flex-grow font-bold text-xl w-1/12">

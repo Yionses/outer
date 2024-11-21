@@ -1,8 +1,7 @@
 import {
-  HomeOutlined,
   SearchOutlined,
   UploadOutlined,
-  LogoutOutlined,
+  LogoutOutlined
 } from "@ant-design/icons"
 import type { MenuProps } from "antd"
 type MenuItem = Required<MenuProps>["items"][number]
@@ -21,21 +20,21 @@ export const routes: MenuItem[] = [
   {
     label: "库存查询",
     icon: <SearchOutlined />,
-    key: "query",
+    key: "query"
   },
   {
     label: "年报表查询",
     icon: <SearchOutlined />,
-    key: "yearQuery",
+    key: "yearQuery"
   },
   {
     label: "物料入库",
     icon: <UploadOutlined />,
-    key: "insert",
+    key: "insert"
   },
   {
     label: "物料出库",
     icon: <LogoutOutlined />,
-    key: "outer",
-  },
+    key: "outer"
+  }
 ]

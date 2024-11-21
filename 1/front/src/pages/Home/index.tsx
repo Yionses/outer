@@ -1,9 +1,8 @@
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import { Button, Card, Layout, Menu, message, theme } from "antd"
 import logo from "@public/icon.ico"
 import { Outlet, useNavigate } from "react-router-dom"
 import { routes } from "@/routes"
-import { UserStatus } from "@/Contexts/UserStatus"
 
 const { Header, Content, Sider } = Layout
 
@@ -20,7 +19,7 @@ const App: React.FC = () => {
   const [isShowTitle, setIsShowTitle] = useState(true)
   const [title, setTitle] = useState("主页")
   const {
-    token: { colorBgContainer },
+    token: { colorBgContainer }
   } = theme.useToken()
   const navigate = useNavigate()
 

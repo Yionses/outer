@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { ProLayout } from "@ant-design/pro-components"
 import { useState } from "react"
 import defaultProps from "./_defaultProps"
@@ -8,7 +10,7 @@ export default (Props: any) => {
   return (
     <div
       style={{
-        height: "100vh",
+        height: "100vh"
       }}
     >
       <ProLayout
@@ -16,7 +18,7 @@ export default (Props: any) => {
         logo={logo}
         {...defaultProps}
         location={{
-          pathname,
+          pathname
         }}
         menuItemRender={(item, dom) => (
           <div

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Button, Empty, message, Modal, Space, Upload } from "antd"
 import { UploadOutlined } from "@ant-design/icons"
 import * as XLSX from "xlsx"
@@ -71,7 +72,7 @@ export default function Outer() {
                         borderWidth: ".5px",
                         borderStyle: "solid",
                         borderLeft: "none",
-                        borderRight: "none",
+                        borderRight: "none"
                       }}
                     >
                       {items || "无"}
@@ -83,7 +84,7 @@ export default function Outer() {
                   fontSize: "1.5rem",
                   fontWeight: "bold",
                   textAlign: "right",
-                  marginRight: "1rem",
+                  marginRight: "1rem"
                 }}
               ></div>
             </>

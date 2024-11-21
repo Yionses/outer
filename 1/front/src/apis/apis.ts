@@ -2,21 +2,21 @@ import { useMutation } from "react-query"
 import { get, post } from "."
 
 export function fetchUploadData() {
-  return useMutation((data: any) => post("/data/upload", data))
+  return useMutation(async (data: any) => post("/data/upload", data))
 }
 
 export function fetchUploadOuterData() {
-  return useMutation((data: any) => post("/data/outerUpload", data))
+  return useMutation(async (data: any) => post("/data/outerUpload", data))
 }
 
 export function fetchMaterial() {
-  return useMutation(() => get("/data/material"))
+  return useMutation(async () => get("/data/material"))
 }
 
 export function fetchSpecifications() {
-  return useMutation((data) => post("/data/specifications", data))
+  return useMutation(async (data) => post("/data/specifications", data))
 }
 
 export function fetchDataDetail() {
-  return useMutation((data) => post("/data/data", data))
+  return useMutation(async (data) => post("/data/data", data))
 }

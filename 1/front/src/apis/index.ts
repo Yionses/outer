@@ -3,7 +3,7 @@ import { message } from "antd"
 
 const httpInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL_LOCAL,
-  timeout: 10000,
+  timeout: 10000
 })
 
 httpInstance.interceptors.request.use(
@@ -13,7 +13,7 @@ httpInstance.interceptors.request.use(
   },
   (error) => {
     message.error("请求失败")
-    return new Promise.reject(error)
+    return Promise.reject(error)
   }
 )
 
@@ -52,9 +52,9 @@ export const fetchFile = async (url: string, data: any, param?: any) => {
     method: "POST",
     body: data,
     headers: {
-      "X-Token": localStorage.getItem("BLOG_TOKEN") || "",
+      "X-Token": localStorage.getItem("BLOG_TOKEN") || ""
     },
-    ...param,
+    ...param
   }
   try {
     const response = await fetch(
