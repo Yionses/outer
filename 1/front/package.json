@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "cross-env NODE_ENV=production && tsc --noEmit &&  vite build",
+    "build": "rimraf ./dist && cross-env NODE_ENV=production && tsc --noEmit &&  vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -39,6 +39,7 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
-    "vite": "4"
+    "vite": "4",
+    "vite-plugin-compression": "^0.5.1"
   }
 }
