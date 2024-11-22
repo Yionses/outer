@@ -12,7 +12,7 @@ import YearQuery from "./pages/YearQuery"
 export default function App() {
   return (
     <UserStatusProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/1">
         <Routes>
           <Route index element={<Login />} />
           <Route

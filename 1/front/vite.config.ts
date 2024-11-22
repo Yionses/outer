@@ -6,6 +6,7 @@ import compression from "vite-plugin-compression"
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {},
+  base: "/1",
   plugins: [
     react(),
     compression({
