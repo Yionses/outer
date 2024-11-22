@@ -55,16 +55,16 @@ export default function Login() {
           <Form.Item
             name="password"
             rules={[
-              { required: true, max: 11, message: "最长为11位" },
-              { required: true, min: 11, message: "最短为11位" }
+              { required: true, max: 13, message: "最长为13位" },
+              { required: true, min: 13, message: "最短为13位" }
             ]}
           >
             <Input
               type="password"
               prefix={<LockOutlined />}
-              placeholder="请输入11位密码"
-              maxLength={11}
-              minLength={11}
+              placeholder="请输入13位密码"
+              maxLength={13}
+              minLength={13}
             />
           </Form.Item>
           <Form.Item>
